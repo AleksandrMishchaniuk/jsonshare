@@ -14,4 +14,11 @@ import '../css/app.css';
 import $ from 'jquery';
 import 'bootstrap';
 
-console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
+import 'jsoneditor/dist/jsoneditor.css'
+import JSONEditor from 'jsoneditor';
+
+const container = document.getElementById('jsoneditor');
+const options = {
+    modes: ['tree', 'view', 'form', 'code', 'text', 'preview']
+};
+const editor = new JSONEditor(container, options);
