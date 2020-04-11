@@ -2,26 +2,33 @@
 
 {% block rightside %}
     <ul class="list-group list-group-flush bg-transparent">
-        <li class="list-group-item bg-transparent">
-            <button class="btn btn-primary">Get links</button>
-        </li>
-        <li class="list-group-item bg-transparent">
-            <label>Read only</label>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <button class="btn btn-outline-secondary" type="button" id="button-addon1" disabled>Copy</button>
-                </div>
-                <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon" readonly aria-describedby="button-addon1">
-            </div>
-        </li>
-        <li class="list-group-item bg-transparent">
-            <label>Edit</label>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <button class="btn btn-outline-secondary" type="button" id="button-addon2" disabled>Copy</button>
-                </div>
-                <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon" readonly aria-describedby="button-addon2">
-            </div>
-        </li>
+        {% if not json %}
+            <li class="list-group-item bg-transparent">
+                <button class="btn btn-primary" data-action = "{{ path('create') }}" id="create-btn">Save and get links</button>
+            </li>
+        {% elseif hash %}
+            {% if hash.canRead %}
+                <li class="list-group-item bg-transparent">
+                    <label>Read only</label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button" id="button-read" disabled>Copy</button>
+                        </div>
+                        <input type="text" class="form-control" value="{{ url('main', {id: json.id, hash: json.hashRead.hash}) }}" readonly aria-describedby="button-read">
+                    </div>
+                </li>
+            {% endif %}
+            {% if hash.canEdit %}
+                <li class="list-group-item bg-transparent">
+                    <label>Edit</label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary" type="button" id="button-edit" disabled>Copy</button>
+                        </div>
+                        <input type="text" class="form-control" value="{{ url('main', {id: json.id, hash: json.hashEdit.hash}) }}" readonly aria-describedby="button-edit">
+                    </div>
+                </li>
+            {% endif %}
+        {% endif %}
     </ul>
 {% endblock %}

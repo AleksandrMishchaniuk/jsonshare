@@ -19,6 +19,24 @@ class JsonRepository extends ServiceEntityRepository
         parent::__construct($registry, Json::class);
     }
 
+    /**
+     * @param int $id
+     * @param string $hash
+     * @return Json|null
+     */
+    public function findByIdAndHash(int $id, string $hash): ?Json
+    {
+        return $this->createQueryBuilder('j')
+            ->innerJoin('j.hashes', 'h')
+            ->andWhere('j.id = :id')
+            ->andWhere('h.hash = :hash')
+            ->setParameters([
+                'id' => $id,
+                'hash' => $hash
+            ])->getQuery()
+            ->getOneOrNullResult();
+    }
+
     // /**
     //  * @return Json[] Returns an array of Json objects
     //  */

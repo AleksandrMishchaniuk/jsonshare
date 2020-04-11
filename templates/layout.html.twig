@@ -1,3 +1,5 @@
+{# @var json \App\Entity\Json #}
+
 {% extends 'base.html.twig' %}
 
 {% block stylesheets %}
@@ -12,7 +14,10 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-8">
-                <div id="jsoneditor"></div>
+                <div id="jsoneditor"
+                     data-json="{{ json ? json.text|json_encode|e('html_attr') }}"
+                     data-readonly="{{ hash ? not hash.canEdit }}"
+                ></div>
             </div>
             <div class="col-md-4">
                 {% block rightside %}{% endblock %}

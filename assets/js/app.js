@@ -17,8 +17,31 @@ import 'bootstrap';
 import 'jsoneditor/dist/jsoneditor.css'
 import JSONEditor from 'jsoneditor';
 
+
 const container = document.getElementById('jsoneditor');
-const options = {
-    modes: ['tree', 'view', 'form', 'code', 'text', 'preview']
-};
-const editor = new JSONEditor(container, options);
+const jsonValue = container.dataset.json ? JSON.parse(container.dataset.json) : {};
+const readOnly = container.dataset.readonly ? container.dataset.readonly : 0;
+
+const options = readOnly ?
+    {
+        modes: ['view', 'preview'],
+        mode: 'preview'
+    }:{
+        modes: ['tree', 'view', 'form', 'code', 'text', 'preview'],
+        mode: 'code'
+    };
+const editor = new JSONEditor(container, options, jsonValue);
+
+
+$(document).ready(function(){
+    $('#create-btn').click(function () {
+        let text = editor.getText();
+        if (!text) {
+            return false;
+        }
+        let action = $(this).data('action');
+        $.post(action, {text: text}, function (data, status) {
+            window.location = data;
+        })
+    });
+});

@@ -114,4 +114,24 @@ class Json
 
         return $this;
     }
+
+    public function getHashRead(): ?Hash
+    {
+        foreach ($this->getHashes() as $hash) {
+            if ($hash->getAccessLevel() == Hash::ACCESS_LEVEL_READ) {
+                return $hash;
+            }
+        }
+        return null;
+    }
+
+    public function getHashEdit(): ?Hash
+    {
+        foreach ($this->getHashes() as $hash) {
+            if ($hash->getAccessLevel() == Hash::ACCESS_LEVEL_EDIT) {
+                return $hash;
+            }
+        }
+        return null;
+    }
 }

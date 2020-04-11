@@ -9,6 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Hash
 {
+    const ACCESS_LEVEL_READ = 1;
+    const ACCESS_LEVEL_EDIT = 2;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -56,7 +59,8 @@ class Hash
 
     public function setAccessLevel(int $access_level): self
     {
-        $this->access_level = $access_level;
+        $this->access_level = in_array($access_level, [self::ACCESS_LEVEL_READ, self::ACCESS_LEVEL_EDIT]) ?
+            $access_level : self::ACCESS_LEVEL_READ;
 
         return $this;
     }
@@ -71,5 +75,20 @@ class Hash
         $this->json = $json;
 
         return $this;
+    }
+
+    public function canRead(): bool
+    {
+        return $this->getAccessLevel() >= self::ACCESS_LEVEL_READ;
+    }
+
+    public function canEdit(): bool
+    {
+        return $this->getAccessLevel() >= self::ACCESS_LEVEL_EDIT;
+    }
+
+    public static function generateHash()
+    {
+        return md5(time() . uniqid() . rand(1, 1000));
     }
 }
