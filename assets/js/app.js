@@ -20,18 +20,20 @@ import JSONEditor from 'jsoneditor';
 
 const container = document.getElementById('jsoneditor');
 const jsonValue = container.dataset.json ? JSON.parse(container.dataset.json) : {};
-const readOnly = container.dataset.readonly ? container.dataset.readonly : 0;
+const isEditable = container.dataset.isEditable;
+const jsonId = container.dataset.id ? container.dataset.id : null;
+const jsonHash = container.dataset.hash ? container.dataset.hash : null;
 
-const options = readOnly ?
-    {
-        modes: ['view', 'preview'],
-        mode: 'preview'
-    }:{
-        modes: ['tree', 'view', 'form', 'code', 'text', 'preview'],
-        mode: 'code'
+
+const options = {
+        // modes: ['tree', 'view', 'form', 'code', 'text', 'preview'],
+        mode: isEditable ? 'code' : 'preview',
+        enableSort: false,
+        enableTransform: false,
+        history: false
+        // , onChange: onChangeJson
     };
 const editor = new JSONEditor(container, options, jsonValue);
-
 
 $(document).ready(function(){
     $('#create-btn').click(function () {
@@ -45,3 +47,35 @@ $(document).ready(function(){
         })
     });
 });
+
+if (jsonId && jsonHash) {
+    let wsUrl = new URL('ws://jsonshare.local');
+    wsUrl.port = 3001;
+    wsUrl.searchParams.append('id', jsonId);
+    wsUrl.searchParams.append('hash', jsonHash);
+    const socket = new WebSocket(wsUrl);
+
+    socket.addEventListener('open', function () {
+        console.log('CONNECTED');
+    });
+
+    socket.addEventListener('message', function (e) {
+        console.log(e.data);
+    });
+
+    editor.aceEditor.getSession().getDocument().on('change', function (e) {
+        console.log(e);
+        socket.send(JSON.stringify(e));
+    });
+}
+
+function onChangeJson() {
+    // let range = editor.aceEditor.selection.getRange().start;
+    // range.row += 1;
+    // range.column -= 5;
+    // editor.aceEditor.selection.setRange({
+    //     start: range,
+    //     end: range
+    // });
+    // console.log(editor.aceEditor.selection.getRange());
+}
