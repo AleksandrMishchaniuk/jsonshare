@@ -14,7 +14,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     /**
-     * @Route("/{id<\d+>?}/{hash<\w+>?}", name="main")
+     * @Route("/{id<\d+>?}/{hash<\w+>?}", name="main", methods={"GET"})
+     * @param int|null $id
+     * @param null|string $hash
+     * @param JsonRepository $repository
      * @return Response
      */
     public function index(?int $id, ?string $hash, JsonRepository $repository)
@@ -43,6 +46,8 @@ class DefaultController extends AbstractController
 
     /**
      * @Route("/create", name="create", methods={"POST"})
+     * @param Request $request
+     * @return Response
      */
     public function createJson(Request $request)
     {
